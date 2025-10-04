@@ -18,7 +18,29 @@ pnpm run build
 pnpm run start
 ```
 
+Run database migrations before starting the API in any environment that does not enable schema synchronization:
+
+```bash
+pnpm run migration:run
+```
+
 Set database credentials through environment variables (`DB_HOST`, `DB_PORT`, `DB_USER`, `DB_PASSWORD`, `DB_NAME`). During local development you can enable schema sync by setting `DB_AUTO_SYNC=true`.
+
+### Authentication & Security
+
+- Request a feed or post interactions with a Bearer token obtained from `POST /v1/auth/anonymous` (or your own identity provider). Tokens are JWTs signed with `JWT_SECRET` (default `change-me`) and expire based on `JWT_TTL` (default `7d`).
+- Controllers now enforce JWT authentication and share a rate limiter (`120 requests/minute` per client) via `@nestjs/throttler`.
+- Operational metrics are exposed at `GET /v1/metrics` (Prometheus format) and HTTP calls are traced by a lightweight interceptor.
+- Configure the ingestion bridge with `INGESTION_API_KEY`; calls to `POST /v1/internal/ingestion/batch` must present this value through the `x-ingestion-key` header.
+
+### Ingestion Pipeline
+
+- Export and push artworks with embeddings via the authenticated ingestion endpoint:
+  ```bash
+  export INGESTION_API_KEY=replace-me
+  pnpm run ingest:load -- met --limit 200 --api-base http://localhost:3000
+  ```
+  The CLI batches normalized records from the Python exporters and calls `POST /v1/internal/ingestion/batch`, which persists both artwork metadata and embeddings idempotently.
 
 ## Running Tests & Quality Gates
 

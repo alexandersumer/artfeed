@@ -22,7 +22,7 @@ export class FeedService {
     private readonly usersService: UsersService,
   ) {}
 
-  async getFeed(userId: string | undefined, count = DEFAULT_COUNT): Promise<{ cards: FeedCardDto[]; nextCursor?: string }> {
+  async getFeed(userId: string, count = DEFAULT_COUNT): Promise<{ cards: FeedCardDto[]; nextCursor?: string }> {
     const user = await this.usersService.ensureUser(userId);
     const profile = await this.usersService.getProfile(user.id);
 

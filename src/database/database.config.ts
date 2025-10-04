@@ -17,7 +17,7 @@ export default registerAs('database', (): DataSourceOptions & { autoSync: boolea
     password: process.env.DB_PASSWORD || 'artfeed',
     database: process.env.DB_NAME || 'artfeed',
     ssl: parseBoolean(process.env.DB_SSL, false) ? { rejectUnauthorized: false } : undefined,
-    autoSync: parseBoolean(process.env.DB_AUTO_SYNC, process.env.NODE_ENV !== 'production'),
+    autoSync: parseBoolean(process.env.DB_AUTO_SYNC, false),
   } as DataSourceOptions & { autoSync: boolean };
 
   return config;

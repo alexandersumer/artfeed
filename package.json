@@ -13,7 +13,10 @@
     "pretest:ingestion": "python3 -m pip install -r ingestion/requirements.txt",
     "test:ingestion": "python3 -m pytest ingestion/tests",
     "test:all": "pnpm run lint && pnpm run test:unit && pnpm run test:ingestion",
-    "ci": "pnpm run build && pnpm run test:all"
+    "ci": "pnpm run build && pnpm run test:all",
+    "migration:run": "ts-node -r tsconfig-paths/register src/database/run-migrations.ts",
+    "migration:revert": "ts-node -r tsconfig-paths/register src/database/revert-last-migration.ts",
+    "ingest:load": "python3 ingestion/load_to_db.py"
   },
   "repository": {
     "type": "git",
@@ -31,11 +34,18 @@
     "@nestjs/common": "^10.4.20",
     "@nestjs/config": "^3.3.0",
     "@nestjs/core": "^10.4.20",
+    "@nestjs/jwt": "^10.2.0",
+    "@nestjs/passport": "^11.0.5",
     "@nestjs/platform-express": "^10.4.20",
     "@nestjs/typeorm": "^10.0.2",
+    "@nestjs/throttler": "^6.2.0",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.2",
+    "dotenv": "^16.4.5",
     "pg": "^8.16.3",
+    "passport": "^0.7.0",
+    "passport-jwt": "^4.0.1",
+    "prom-client": "^15.1.3",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.2",
     "typeorm": "^0.3.27"
@@ -45,6 +55,7 @@
     "@types/express": "^5.0.3",
     "@types/jest": "^29.5.14",
     "@types/node": "^24.6.1",
+    "@types/passport-jwt": "^3.0.9",
     "@types/supertest": "^6.0.3",
     "@typescript-eslint/eslint-plugin": "^8.45.0",
     "@typescript-eslint/parser": "^8.45.0",

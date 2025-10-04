@@ -12,7 +12,10 @@ export class UsersService {
     private readonly profileRepository: Repository<UserProfile>,
   ) {}
 
-  async ensureUser(userId?: string): Promise<User> {
+  async ensureUser(
+    userId?: string,
+    initial?: Partial<Pick<User, 'locale' | 'country'>>,
+  ): Promise<User> {
     if (userId) {
       const existing = await this.userRepository.findOne({ where: { id: userId } });
       if (existing) {
@@ -20,7 +23,7 @@ export class UsersService {
       }
     }
 
-    const created = this.userRepository.create();
+    const created = this.userRepository.create(initial ?? {});
     return this.userRepository.save(created);
   }
 

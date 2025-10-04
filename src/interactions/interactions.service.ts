@@ -20,7 +20,7 @@ export class InteractionsService {
     private readonly recommendationService: RecommendationService,
   ) {}
 
-  async recordInteraction(userId: string | undefined, dto: CreateInteractionDto): Promise<void> {
+  async recordInteraction(userId: string, dto: CreateInteractionDto): Promise<void> {
     const artwork = await this.artworksService.findById(dto.artworkId);
     if (!artwork?.embedding) {
       throw new BadRequestException('Artwork missing embedding or not found');

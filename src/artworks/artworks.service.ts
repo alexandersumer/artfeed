@@ -44,6 +44,10 @@ export class ArtworksService {
     return this.artworkRepository.findOne({ where: { id }, relations: ['embedding'] });
   }
 
+  async findBySourceIdentifier(source: string, sourceId: string): Promise<Artwork | null> {
+    return this.artworkRepository.findOne({ where: { source, sourceId }, relations: ['embedding'] });
+  }
+
   async findCandidates(limit: number, publicOnly = true): Promise<Artwork[]> {
     return this.artworkRepository.find({
       where: publicOnly ? { isPublicDomain: true } : {},

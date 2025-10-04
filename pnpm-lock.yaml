@@ -17,9 +17,18 @@ importers:
       '@nestjs/core':
         specifier: ^10.4.20
         version: 10.4.20(@nestjs/common@10.4.20(class-transformer@0.5.1)(class-validator@0.14.2)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/platform-express@10.4.20)(encoding@0.1.13)(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@nestjs/jwt':
+        specifier: ^10.2.0
+        version: 10.2.0(@nestjs/common@10.4.20(class-transformer@0.5.1)(class-validator@0.14.2)(reflect-metadata@0.2.2)(rxjs@7.8.2))
+      '@nestjs/passport':
+        specifier: ^11.0.5
+        version: 11.0.5(@nestjs/common@10.4.20(class-transformer@0.5.1)(class-validator@0.14.2)(reflect-metadata@0.2.2)(rxjs@7.8.2))(passport@0.7.0)
       '@nestjs/platform-express':
         specifier: ^10.4.20
         version: 10.4.20(@nestjs/common@10.4.20(class-transformer@0.5.1)(class-validator@0.14.2)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@10.4.20)
+      '@nestjs/throttler':
+        specifier: ^6.2.0
+        version: 6.4.0(@nestjs/common@10.4.20(class-transformer@0.5.1)(class-validator@0.14.2)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@10.4.20)(reflect-metadata@0.2.2)
       '@nestjs/typeorm':
         specifier: ^10.0.2
         version: 10.0.2(@nestjs/common@10.4.20(class-transformer@0.5.1)(class-validator@0.14.2)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@10.4.20)(reflect-metadata@0.2.2)(rxjs@7.8.2)(typeorm@0.3.27(pg@8.16.3)(reflect-metadata@0.2.2)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@24.6.1)(typescript@5.9.3)))
@@ -29,9 +38,21 @@ importers:
       class-validator:
         specifier: ^0.14.2
         version: 0.14.2
+      dotenv:
+        specifier: ^16.4.5
+        version: 16.6.1
+      passport:
+        specifier: ^0.7.0
+        version: 0.7.0
+      passport-jwt:
+        specifier: ^4.0.1
+        version: 4.0.1
       pg:
         specifier: ^8.16.3
         version: 8.16.3
+      prom-client:
+        specifier: ^15.1.3
+        version: 15.1.3
       reflect-metadata:
         specifier: ^0.2.2
         version: 0.2.2
@@ -54,6 +75,9 @@ importers:
       '@types/node':
         specifier: ^24.6.1
         version: 24.6.1
+      '@types/passport-jwt':
+        specifier: ^3.0.9
+        version: 3.0.13
       '@types/supertest':
         specifier: ^6.0.3
         version: 6.0.3
@@ -456,6 +480,17 @@ packages:
       '@nestjs/websockets':
         optional: true
 
+  '@nestjs/jwt@10.2.0':
+    resolution: {integrity: sha512-x8cG90SURkEiLOehNaN2aRlotxT0KZESUliOPKKnjWiyJOcWurkF3w345WOX0P4MgFzUjGoZ1Sy0aZnxeihT0g==, tarball: https://packages.atlassian.com/api/npm/npm-remote/@nestjs/jwt/-/jwt-10.2.0.tgz}
+    peerDependencies:
+      '@nestjs/common': ^8.0.0 || ^9.0.0 || ^10.0.0
+
+  '@nestjs/passport@11.0.5':
+    resolution: {integrity: sha512-ulQX6mbjlws92PIM15Naes4F4p2JoxGnIJuUsdXQPT+Oo2sqQmENEZXM7eYuimocfHnKlcfZOuyzbA33LwUlOQ==, tarball: https://packages.atlassian.com/api/npm/npm-remote/@nestjs/passport/-/passport-11.0.5.tgz}
+    peerDependencies:
+      '@nestjs/common': ^10.0.0 || ^11.0.0
+      passport: ^0.5.0 || ^0.6.0 || ^0.7.0
+
   '@nestjs/platform-express@10.4.20':
     resolution: {integrity: sha512-rh97mX3rimyf4xLMLHuTOBKe6UD8LOJ14VlJ1F/PTd6C6ZK9Ak6EHuJvdaGcSFQhd3ZMBh3I6CuujKGW9pNdIg==, tarball: https://packages.atlassian.com/api/npm/npm-remote/@nestjs/platform-express/-/platform-express-10.4.20.tgz}
     peerDependencies:
@@ -474,6 +509,13 @@ packages:
         optional: true
       '@nestjs/platform-express':
         optional: true
+
+  '@nestjs/throttler@6.4.0':
+    resolution: {integrity: sha512-osL67i0PUuwU5nqSuJjtUJZMkxAnYB4VldgYUMGzvYRJDCqGRFMWbsbzm/CkUtPLRL30I8T74Xgt/OQxnYokiA==, tarball: https://packages.atlassian.com/api/npm/npm-remote/@nestjs/throttler/-/throttler-6.4.0.tgz}
+    peerDependencies:
+      '@nestjs/common': ^7.0.0 || ^8.0.0 || ^9.0.0 || ^10.0.0 || ^11.0.0
+      '@nestjs/core': ^7.0.0 || ^8.0.0 || ^9.0.0 || ^10.0.0 || ^11.0.0
+      reflect-metadata: ^0.1.13 || ^0.2.0
 
   '@nestjs/typeorm@10.0.2':
     resolution: {integrity: sha512-H738bJyydK4SQkRCTeh1aFBxoO1E9xdL/HaLGThwrqN95os5mEyAtK7BLADOS+vldP4jDZ2VQPLj4epWwRqCeQ==, tarball: https://packages.atlassian.com/api/npm/npm-remote/@nestjs/typeorm/-/typeorm-10.0.2.tgz}
@@ -512,6 +554,10 @@ packages:
     resolution: {integrity: sha512-um0xL3fO7Mf4fDxcqx9KryrB7zgRM5JSlvGN5AGkP6JLM5XEKyjeAiPbNxdXVXQ16isuAhYpvP88NgL2BGd6aA==, tarball: https://packages.atlassian.com/api/npm/npm-remote/@nuxtjs/opencollective/-/opencollective-0.3.2.tgz}
     engines: {node: '>=8.0.0', npm: '>=5.0.0'}
     hasBin: true
+
+  '@opentelemetry/api@1.9.0':
+    resolution: {integrity: sha512-3giAOQvZiH5F9bMlMiv8+GSPMeqg0dbaeo58/0SlA9sxSqZhnUtxzX9/2FzyhS9sWQf5S0GJE0AKBrFqjpeYcg==, tarball: https://packages.atlassian.com/api/npm/npm-remote/@opentelemetry/api/-/api-1.9.0.tgz}
+    engines: {node: '>=8.0.0'}
 
   '@paralleldrive/cuid2@2.2.2':
     resolution: {integrity: sha512-ZOBkgDwEdoYVlSeRbYYXs0S9MejQofiVYoTbKzy/6GQa39/q5tQU2IX46+shYnUkpEl3wc+J6wRlar7r2EK2xA==, tarball: https://packages.atlassian.com/api/npm/npm-remote/@paralleldrive/cuid2/-/cuid2-2.2.2.tgz}
@@ -606,6 +652,9 @@ packages:
   '@types/json-schema@7.0.15':
     resolution: {integrity: sha512-5+fP8P8MFNC+AyZCDxrB2pkZFPGzqQWUzpSeuuVLvm8VMcorNYavBqoFcxK8bQz4Qsbn4oUEEem4wDLfcysGHA==, tarball: https://packages.atlassian.com/api/npm/npm-remote/@types/json-schema/-/json-schema-7.0.15.tgz}
 
+  '@types/jsonwebtoken@9.0.5':
+    resolution: {integrity: sha512-VRLSGzik+Unrup6BsouBeHsf4d1hOEgYWTm/7Nmw1sXoN1+tRly/Gy/po3yeahnP4jfnQWWAhQAqcNfH7ngOkA==, tarball: https://packages.atlassian.com/api/npm/npm-remote/@types/jsonwebtoken/-/jsonwebtoken-9.0.5.tgz}
+
   '@types/methods@1.1.4':
     resolution: {integrity: sha512-ymXWVrDiCxTBE3+RIrrP533E70eA+9qu7zdWoHuOmGujkYtzf4HQF96b8nwHLqhuf4ykX61IGRIB38CC6/sImQ==, tarball: https://packages.atlassian.com/api/npm/npm-remote/@types/methods/-/methods-1.1.4.tgz}
 
@@ -614,6 +663,15 @@ packages:
 
   '@types/node@24.6.1':
     resolution: {integrity: sha512-ljvjjs3DNXummeIaooB4cLBKg2U6SPI6Hjra/9rRIy7CpM0HpLtG9HptkMKAb4HYWy5S7HUvJEuWgr/y0U8SHw==, tarball: https://packages.atlassian.com/api/npm/npm-remote/@types/node/-/node-24.6.1.tgz}
+
+  '@types/passport-jwt@3.0.13':
+    resolution: {integrity: sha512-fjHaC6Bv8EpMMqzTnHP32SXlZGaNfBPC/Po5dmRGYi2Ky7ljXPbGnOy+SxZqa6iZvFgVhoJ1915Re3m93zmcfA==, tarball: https://packages.atlassian.com/api/npm/npm-remote/@types/passport-jwt/-/passport-jwt-3.0.13.tgz}
+
+  '@types/passport-strategy@0.2.38':
+    resolution: {integrity: sha512-GC6eMqqojOooq993Tmnmp7AUTbbQSgilyvpCYQjT+H6JfG/g6RGc7nXEniZlp0zyKJ0WUdOiZWLBZft9Yug1uA==, tarball: https://packages.atlassian.com/api/npm/npm-remote/@types/passport-strategy/-/passport-strategy-0.2.38.tgz}
+
+  '@types/passport@1.0.17':
+    resolution: {integrity: sha512-aciLyx+wDwT2t2/kJGJR2AEeBz0nJU4WuRX04Wu9Dqc5lSUtwu0WERPHYsLhF9PtseiAMPBGNUOtFjxZ56prsg==, tarball: https://packages.atlassian.com/api/npm/npm-remote/@types/passport/-/passport-1.0.17.tgz}
 
   '@types/qs@6.14.0':
     resolution: {integrity: sha512-eOunJqu0K1923aExK6y8p6fsihYEn/BYuQ4g0CxAAgFc4b/ZLN4CrsRZ55srTdqoiLzU2B2evC+apEIxprEzkQ==, tarball: https://packages.atlassian.com/api/npm/npm-remote/@types/qs/-/qs-6.14.0.tgz}
@@ -847,6 +905,9 @@ packages:
   bindings@1.5.0:
     resolution: {integrity: sha512-p2q/t/mhvuOj/UeLlV6566GD/guowlr0hHxClI0W9m7MWYkL1F0hLo+0Aexs9HSPCtR1SXQ0TD3MMKrXZajbiQ==, tarball: https://packages.atlassian.com/api/npm/npm-remote/bindings/-/bindings-1.5.0.tgz}
 
+  bintrees@1.0.2:
+    resolution: {integrity: sha512-VOMgTMwjAaUG580SXn3LacVgjurrbMme7ZZNYGSSV7mmtY6QQRh0Eg3pwIcntQ77DErK1L0NxkbetjcoXzVwKw==, tarball: https://packages.atlassian.com/api/npm/npm-remote/bintrees/-/bintrees-1.0.2.tgz}
+
   bl@4.1.0:
     resolution: {integrity: sha512-1W07cM9gS6DcLperZfFSj+bWLtaPGSOHWhPiGzXmvVJbRLdG82sH/Kn8EtW1VqWVA54AKf2h5k5BbnIbwF3h6w==, tarball: https://packages.atlassian.com/api/npm/npm-remote/bl/-/bl-4.1.0.tgz}
 
@@ -875,6 +936,9 @@ packages:
 
   bser@2.1.1:
     resolution: {integrity: sha512-gQxTNE/GAfIIrmHLUE3oJyp5FO6HRBfhjnw4/wMmA63ZGDJnWBmgY/lyQBpnDUkGmAhbSe39tx2d/iTOAfglwQ==, tarball: https://packages.atlassian.com/api/npm/npm-remote/bser/-/bser-2.1.1.tgz}
+
+  buffer-equal-constant-time@1.0.1:
+    resolution: {integrity: sha512-zRpUiDwd/xk6ADqPMATG8vc9VPrkck7T07OIx0gnjmJAnHnTVXNQG3vfvWNuiZIkwu9KrKdA1iJKfsfTVxE6NA==, tarball: https://packages.atlassian.com/api/npm/npm-remote/buffer-equal-constant-time/-/buffer-equal-constant-time-1.0.1.tgz}
 
   buffer-from@1.1.2:
     resolution: {integrity: sha512-E+XQCRwSbaaiChtv6k6Dwgc+bx+Bs6vuKJHHl5kox/BaKbhiXzqQOwK4cO22yElGp2OCmjwVhT3HmxgyPGnJfQ==, tarball: https://packages.atlassian.com/api/npm/npm-remote/buffer-from/-/buffer-from-1.1.2.tgz}
@@ -1134,6 +1198,9 @@ packages:
 
   eastasianwidth@0.2.0:
     resolution: {integrity: sha512-I88TYZWc9XiYHRQ4/3c5rjjfgkjhLyW2luGIheGERbNQ6OY7yTybanSpDXZa8y7VUP9YmDcYa+eyq4ca7iLqWA==, tarball: https://packages.atlassian.com/api/npm/npm-remote/eastasianwidth/-/eastasianwidth-0.2.0.tgz}
+
+  ecdsa-sig-formatter@1.0.11:
+    resolution: {integrity: sha512-nagl3RYrbNv6kQkeJIpt6NJZy8twLB/2vtz6yN9Z4vRKHN4/QZJIEbqohALSgwKdnksuY3k5Addp5lg8sVoVcQ==, tarball: https://packages.atlassian.com/api/npm/npm-remote/ecdsa-sig-formatter/-/ecdsa-sig-formatter-1.0.11.tgz}
 
   ee-first@1.1.1:
     resolution: {integrity: sha512-WMwm9LhRUo+WUaRN+vRuETqG89IgZphVSNkdFgeb6sS/E4OrDIN7t48CAewSHXc6C8lefD8KKfr5vY61brQlow==, tarball: https://packages.atlassian.com/api/npm/npm-remote/ee-first/-/ee-first-1.1.1.tgz}
@@ -1790,6 +1857,16 @@ packages:
     engines: {node: '>=6'}
     hasBin: true
 
+  jsonwebtoken@9.0.2:
+    resolution: {integrity: sha512-PRp66vJ865SSqOlgqS8hujT5U4AOgMfhrwYIuIhfKaoSCZcirrmASQr8CX7cUg+RMih+hgznrjp99o+W4pJLHQ==, tarball: https://packages.atlassian.com/api/npm/npm-remote/jsonwebtoken/-/jsonwebtoken-9.0.2.tgz}
+    engines: {node: '>=12', npm: '>=6'}
+
+  jwa@1.4.2:
+    resolution: {integrity: sha512-eeH5JO+21J78qMvTIDdBXidBd6nG2kZjg5Ohz/1fpa28Z4CcsWUzJ1ZZyFq/3z3N17aZy+ZuBoHljASbL1WfOw==, tarball: https://packages.atlassian.com/api/npm/npm-remote/jwa/-/jwa-1.4.2.tgz}
+
+  jws@3.2.2:
+    resolution: {integrity: sha512-YHlZCB6lMTllWDtSPHz/ZXTsi8S00usEV6v1tjq8tOUZzw7DpSDWVXjXDre6ed1w/pd495ODpHZYSdkRTsa0HA==, tarball: https://packages.atlassian.com/api/npm/npm-remote/jws/-/jws-3.2.2.tgz}
+
   keyv@4.5.4:
     resolution: {integrity: sha512-oxVHkHR/EJf2CNXnWxRLW6mg7JyCCUcG0DtEGmL2ctUo1PNTin1PUil+r/+4r5MpVgC/fn1kjsx7mjSujKqIpw==, tarball: https://packages.atlassian.com/api/npm/npm-remote/keyv/-/keyv-4.5.4.tgz}
 
@@ -1819,11 +1896,32 @@ packages:
     resolution: {integrity: sha512-iPZK6eYjbxRu3uB4/WZ3EsEIMJFMqAoopl3R+zuq0UjcAm/MO6KCweDgPfP3elTztoKP3KtnVHxTn2NHBSDVUw==, tarball: https://packages.atlassian.com/api/npm/npm-remote/locate-path/-/locate-path-6.0.0.tgz}
     engines: {node: '>=10'}
 
+  lodash.includes@4.3.0:
+    resolution: {integrity: sha512-W3Bx6mdkRTGtlJISOvVD/lbqjTlPPUDTMnlXZFnVwi9NKJ6tiAk6LVdlhZMm17VZisqhKcgzpO5Wz91PCt5b0w==, tarball: https://packages.atlassian.com/api/npm/npm-remote/lodash.includes/-/lodash.includes-4.3.0.tgz}
+
+  lodash.isboolean@3.0.3:
+    resolution: {integrity: sha512-Bz5mupy2SVbPHURB98VAcw+aHh4vRV5IPNhILUCsOzRmsTmSQ17jIuqopAentWoehktxGd9e/hbIXq980/1QJg==, tarball: https://packages.atlassian.com/api/npm/npm-remote/lodash.isboolean/-/lodash.isboolean-3.0.3.tgz}
+
+  lodash.isinteger@4.0.4:
+    resolution: {integrity: sha512-DBwtEWN2caHQ9/imiNeEA5ys1JoRtRfY3d7V9wkqtbycnAmTvRRmbHKDV4a0EYc678/dia0jrte4tjYwVBaZUA==, tarball: https://packages.atlassian.com/api/npm/npm-remote/lodash.isinteger/-/lodash.isinteger-4.0.4.tgz}
+
+  lodash.isnumber@3.0.3:
+    resolution: {integrity: sha512-QYqzpfwO3/CWf3XP+Z+tkQsfaLL/EnUlXWVkIk5FUPc4sBdTehEqZONuyRt2P67PXAk+NXmTBcc97zw9t1FQrw==, tarball: https://packages.atlassian.com/api/npm/npm-remote/lodash.isnumber/-/lodash.isnumber-3.0.3.tgz}
+
+  lodash.isplainobject@4.0.6:
+    resolution: {integrity: sha512-oSXzaWypCMHkPC3NvBEaPHf0KsA5mvPrOPgQWDsbg8n7orZ290M0BmC/jgRZ4vcJ6DTAhjrsSYgdsW/F+MFOBA==, tarball: https://packages.atlassian.com/api/npm/npm-remote/lodash.isplainobject/-/lodash.isplainobject-4.0.6.tgz}
+
+  lodash.isstring@4.0.1:
+    resolution: {integrity: sha512-0wJxfxH1wgO3GrbuP+dTTk7op+6L41QCXbGINEmD+ny/G/eCqGzxyCsh7159S+mgDDcoarnBw6PC1PS5+wUGgw==, tarball: https://packages.atlassian.com/api/npm/npm-remote/lodash.isstring/-/lodash.isstring-4.0.1.tgz}
+
   lodash.memoize@4.1.2:
     resolution: {integrity: sha512-t7j+NzmgnQzTAYXcsHYLgimltOV1MXHtlOWf6GjL9Kj8GK5FInw5JotxvbOs+IvV1/Dzo04/fCGfLVs7aXb4Ag==, tarball: https://packages.atlassian.com/api/npm/npm-remote/lodash.memoize/-/lodash.memoize-4.1.2.tgz}
 
   lodash.merge@4.6.2:
     resolution: {integrity: sha512-0KpjqXRVvrYyCsX1swR/XTK0va6VQkQM6MNo7PqW77ByjAhoARA8EfrP1N4+KlKj8YS0ZUCtRT/YUuhyYDujIQ==, tarball: https://packages.atlassian.com/api/npm/npm-remote/lodash.merge/-/lodash.merge-4.6.2.tgz}
+
+  lodash.once@4.1.1:
+    resolution: {integrity: sha512-Sb487aTOCr9drQVL8pIxOzVhafOjZN9UU54hiN8PU3uAiSV7lx1yYNpbNmex2PK6dSJoNTSJUUswT651yww3Mg==, tarball: https://packages.atlassian.com/api/npm/npm-remote/lodash.once/-/lodash.once-4.1.1.tgz}
 
   lodash@4.17.21:
     resolution: {integrity: sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==, tarball: https://packages.atlassian.com/api/npm/npm-remote/lodash/-/lodash-4.17.21.tgz}
@@ -2096,6 +2194,17 @@ packages:
     resolution: {integrity: sha512-CiyeOxFT/JZyN5m0z9PfXw4SCBJ6Sygz1Dpl0wqjlhDEGGBP1GnsUVEL0p63hoG1fcj3fHynXi9NYO4nWOL+qQ==, tarball: https://packages.atlassian.com/api/npm/npm-remote/parseurl/-/parseurl-1.3.3.tgz}
     engines: {node: '>= 0.8'}
 
+  passport-jwt@4.0.1:
+    resolution: {integrity: sha512-UCKMDYhNuGOBE9/9Ycuoyh7vP6jpeTp/+sfMJl7nLff/t6dps+iaeE0hhNkKN8/HZHcJ7lCdOyDxHdDoxoSvdQ==, tarball: https://packages.atlassian.com/api/npm/npm-remote/passport-jwt/-/passport-jwt-4.0.1.tgz}
+
+  passport-strategy@1.0.0:
+    resolution: {integrity: sha512-CB97UUvDKJde2V0KDWWB3lyf6PC3FaZP7YxZ2G8OAtn9p4HI9j9JLP9qjOGZFvyl8uwNT8qM+hGnz/n16NI7oA==, tarball: https://packages.atlassian.com/api/npm/npm-remote/passport-strategy/-/passport-strategy-1.0.0.tgz}
+    engines: {node: '>= 0.4.0'}
+
+  passport@0.7.0:
+    resolution: {integrity: sha512-cPLl+qZpSc+ireUvt+IzqbED1cHHkDoVYMo30jbJIdOOjQ1MQYZBPiNvmi8UM6lJuOpTPXJGZQk0DtC4y61MYQ==, tarball: https://packages.atlassian.com/api/npm/npm-remote/passport/-/passport-0.7.0.tgz}
+    engines: {node: '>= 0.4.0'}
+
   path-exists@4.0.0:
     resolution: {integrity: sha512-ak9Qy5Q7jYb2Wwcey5Fpvg2KoAc/ZIhLSLOSBmRmygPsGwkVVt0fZa0qrtMz+m6tJTAHfZQ8FnmB4MG4LWy7/w==, tarball: https://packages.atlassian.com/api/npm/npm-remote/path-exists/-/path-exists-4.0.0.tgz}
     engines: {node: '>=8'}
@@ -2120,6 +2229,9 @@ packages:
 
   path-to-regexp@3.3.0:
     resolution: {integrity: sha512-qyCH421YQPS2WFDxDjftfc1ZR5WKQzVzqsp4n9M2kQhVOo/ByahFoUNJfl58kOcEGfQ//7weFTDhm+ss8Ecxgw==, tarball: https://packages.atlassian.com/api/npm/npm-remote/path-to-regexp/-/path-to-regexp-3.3.0.tgz}
+
+  pause@0.0.1:
+    resolution: {integrity: sha512-KG8UEiEVkR3wGEb4m5yZkVCzigAD+cVEJck2CzYZO37ZGJfctvVptVO192MwrtPhzONn6go8ylnOdMhKqi4nfg==, tarball: https://packages.atlassian.com/api/npm/npm-remote/pause/-/pause-0.0.1.tgz}
 
   pg-cloudflare@1.2.7:
     resolution: {integrity: sha512-YgCtzMH0ptvZJslLM1ffsY4EuGaU0cx4XSdXLRFae8bPP4dS5xL1tNB3k2o/N64cHJpwU7dxKli/nZ2lUa5fLg==, tarball: https://packages.atlassian.com/api/npm/npm-remote/pg-cloudflare/-/pg-cloudflare-1.2.7.tgz}
@@ -2202,6 +2314,10 @@ packages:
   pretty-format@29.7.0:
     resolution: {integrity: sha512-Pdlw/oPxN+aXdmM9R00JVC9WVFoCLTKJvDVLgmJ+qAffBMxsV85l/Lu7sNx4zSzPyoL2euImuEwHhOXdEgNFZQ==, tarball: https://packages.atlassian.com/api/npm/npm-remote/pretty-format/-/pretty-format-29.7.0.tgz}
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
+
+  prom-client@15.1.3:
+    resolution: {integrity: sha512-6ZiOBfCywsD4k1BN9IX0uZhF+tJkV8q8llP64G5Hajs4JOeVLPCwpPVcpXy3BwYiUGgyJzsJJQeOIv7+hDSq8g==, tarball: https://packages.atlassian.com/api/npm/npm-remote/prom-client/-/prom-client-15.1.3.tgz}
+    engines: {node: ^16 || ^18 || >=20}
 
   promise-inflight@1.0.1:
     resolution: {integrity: sha512-6zWPyEOFaQBJYcGMHBKTKJ3u6TBsnMFOIZSa6ce1e/ZrrsOlnHRHbabMjLiBYKp+n44X9eUI6VUPaukCXHuG4g==, tarball: https://packages.atlassian.com/api/npm/npm-remote/promise-inflight/-/promise-inflight-1.0.1.tgz}
@@ -2518,6 +2634,9 @@ packages:
   tar@6.2.1:
     resolution: {integrity: sha512-DZ4yORTwrbTj/7MZYq2w+/ZFdI6OZ/f9SFHR+71gIVUZhOQPHzVCLpvRnPgyaMpfWxxk/4ONva3GQSyNIKRv6A==, tarball: https://packages.atlassian.com/api/npm/npm-remote/tar/-/tar-6.2.1.tgz}
     engines: {node: '>=10'}
+
+  tdigest@0.1.2:
+    resolution: {integrity: sha512-+G0LLgjjo9BZX2MfdvPfH+MKLCrxlXSYec5DaPYP1fe6Iyhf0/fSmJ0bFiZ1F8BT6cGXl2LpltQptzjXKWEkKA==, tarball: https://packages.atlassian.com/api/npm/npm-remote/tdigest/-/tdigest-0.1.2.tgz}
 
   test-exclude@6.0.0:
     resolution: {integrity: sha512-cAGWPIyOHU6zlmg88jwm7VRyXnMN7iV68OGAbYDk/Mh/xC/pzVPlQtY6ngoIH/5/tciuhGfvESU8GrHrcxD56w==, tarball: https://packages.atlassian.com/api/npm/npm-remote/test-exclude/-/test-exclude-6.0.0.tgz}
@@ -3328,6 +3447,17 @@ snapshots:
     transitivePeerDependencies:
       - encoding
 
+  '@nestjs/jwt@10.2.0(@nestjs/common@10.4.20(class-transformer@0.5.1)(class-validator@0.14.2)(reflect-metadata@0.2.2)(rxjs@7.8.2))':
+    dependencies:
+      '@nestjs/common': 10.4.20(class-transformer@0.5.1)(class-validator@0.14.2)(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@types/jsonwebtoken': 9.0.5
+      jsonwebtoken: 9.0.2
+
+  '@nestjs/passport@11.0.5(@nestjs/common@10.4.20(class-transformer@0.5.1)(class-validator@0.14.2)(reflect-metadata@0.2.2)(rxjs@7.8.2))(passport@0.7.0)':
+    dependencies:
+      '@nestjs/common': 10.4.20(class-transformer@0.5.1)(class-validator@0.14.2)(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      passport: 0.7.0
+
   '@nestjs/platform-express@10.4.20(@nestjs/common@10.4.20(class-transformer@0.5.1)(class-validator@0.14.2)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@10.4.20)':
     dependencies:
       '@nestjs/common': 10.4.20(class-transformer@0.5.1)(class-validator@0.14.2)(reflect-metadata@0.2.2)(rxjs@7.8.2)
@@ -3347,6 +3477,12 @@ snapshots:
       tslib: 2.8.1
     optionalDependencies:
       '@nestjs/platform-express': 10.4.20(@nestjs/common@10.4.20(class-transformer@0.5.1)(class-validator@0.14.2)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@10.4.20)
+
+  '@nestjs/throttler@6.4.0(@nestjs/common@10.4.20(class-transformer@0.5.1)(class-validator@0.14.2)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@10.4.20)(reflect-metadata@0.2.2)':
+    dependencies:
+      '@nestjs/common': 10.4.20(class-transformer@0.5.1)(class-validator@0.14.2)(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@nestjs/core': 10.4.20(@nestjs/common@10.4.20(class-transformer@0.5.1)(class-validator@0.14.2)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/platform-express@10.4.20)(encoding@0.1.13)(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      reflect-metadata: 0.2.2
 
   '@nestjs/typeorm@10.0.2(@nestjs/common@10.4.20(class-transformer@0.5.1)(class-validator@0.14.2)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@10.4.20)(reflect-metadata@0.2.2)(rxjs@7.8.2)(typeorm@0.3.27(pg@8.16.3)(reflect-metadata@0.2.2)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@24.6.1)(typescript@5.9.3)))':
     dependencies:
@@ -3390,6 +3526,8 @@ snapshots:
       node-fetch: 2.7.0(encoding@0.1.13)
     transitivePeerDependencies:
       - encoding
+
+  '@opentelemetry/api@1.9.0': {}
 
   '@paralleldrive/cuid2@2.2.2':
     dependencies:
@@ -3501,6 +3639,10 @@ snapshots:
 
   '@types/json-schema@7.0.15': {}
 
+  '@types/jsonwebtoken@9.0.5':
+    dependencies:
+      '@types/node': 24.6.1
+
   '@types/methods@1.1.4': {}
 
   '@types/mime@1.3.5': {}
@@ -3508,6 +3650,21 @@ snapshots:
   '@types/node@24.6.1':
     dependencies:
       undici-types: 7.13.0
+
+  '@types/passport-jwt@3.0.13':
+    dependencies:
+      '@types/express': 5.0.3
+      '@types/jsonwebtoken': 9.0.5
+      '@types/passport-strategy': 0.2.38
+
+  '@types/passport-strategy@0.2.38':
+    dependencies:
+      '@types/express': 5.0.3
+      '@types/passport': 1.0.17
+
+  '@types/passport@1.0.17':
+    dependencies:
+      '@types/express': 5.0.3
 
   '@types/qs@6.14.0': {}
 
@@ -3801,6 +3958,8 @@ snapshots:
     dependencies:
       file-uri-to-path: 1.0.0
 
+  bintrees@1.0.2: {}
+
   bl@4.1.0:
     dependencies:
       buffer: 5.7.1
@@ -3852,6 +4011,8 @@ snapshots:
   bser@2.1.1:
     dependencies:
       node-int64: 0.4.0
+
+  buffer-equal-constant-time@1.0.1: {}
 
   buffer-from@1.1.2: {}
 
@@ -4090,6 +4251,10 @@ snapshots:
       gopd: 1.2.0
 
   eastasianwidth@0.2.0: {}
+
+  ecdsa-sig-formatter@1.0.11:
+    dependencies:
+      safe-buffer: 5.2.1
 
   ee-first@1.1.1: {}
 
@@ -4992,6 +5157,30 @@ snapshots:
 
   json5@2.2.3: {}
 
+  jsonwebtoken@9.0.2:
+    dependencies:
+      jws: 3.2.2
+      lodash.includes: 4.3.0
+      lodash.isboolean: 3.0.3
+      lodash.isinteger: 4.0.4
+      lodash.isnumber: 3.0.3
+      lodash.isplainobject: 4.0.6
+      lodash.isstring: 4.0.1
+      lodash.once: 4.1.1
+      ms: 2.1.3
+      semver: 7.7.2
+
+  jwa@1.4.2:
+    dependencies:
+      buffer-equal-constant-time: 1.0.1
+      ecdsa-sig-formatter: 1.0.11
+      safe-buffer: 5.2.1
+
+  jws@3.2.2:
+    dependencies:
+      jwa: 1.4.2
+      safe-buffer: 5.2.1
+
   keyv@4.5.4:
     dependencies:
       json-buffer: 3.0.1
@@ -5017,9 +5206,23 @@ snapshots:
     dependencies:
       p-locate: 5.0.0
 
+  lodash.includes@4.3.0: {}
+
+  lodash.isboolean@3.0.3: {}
+
+  lodash.isinteger@4.0.4: {}
+
+  lodash.isnumber@3.0.3: {}
+
+  lodash.isplainobject@4.0.6: {}
+
+  lodash.isstring@4.0.1: {}
+
   lodash.memoize@4.1.2: {}
 
   lodash.merge@4.6.2: {}
+
+  lodash.once@4.1.1: {}
 
   lodash@4.17.21: {}
 
@@ -5298,6 +5501,19 @@ snapshots:
 
   parseurl@1.3.3: {}
 
+  passport-jwt@4.0.1:
+    dependencies:
+      jsonwebtoken: 9.0.2
+      passport-strategy: 1.0.0
+
+  passport-strategy@1.0.0: {}
+
+  passport@0.7.0:
+    dependencies:
+      passport-strategy: 1.0.0
+      pause: 0.0.1
+      utils-merge: 1.0.1
+
   path-exists@4.0.0: {}
 
   path-is-absolute@1.0.1: {}
@@ -5314,6 +5530,8 @@ snapshots:
   path-to-regexp@0.1.12: {}
 
   path-to-regexp@3.3.0: {}
+
+  pause@0.0.1: {}
 
   pg-cloudflare@1.2.7:
     optional: true
@@ -5394,6 +5612,11 @@ snapshots:
       '@jest/schemas': 29.6.3
       ansi-styles: 5.2.0
       react-is: 18.3.1
+
+  prom-client@15.1.3:
+    dependencies:
+      '@opentelemetry/api': 1.9.0
+      tdigest: 0.1.2
 
   promise-inflight@1.0.1:
     optional: true
@@ -5753,6 +5976,10 @@ snapshots:
       minizlib: 2.1.2
       mkdirp: 1.0.4
       yallist: 4.0.0
+
+  tdigest@0.1.2:
+    dependencies:
+      bintrees: 1.0.2
 
   test-exclude@6.0.0:
     dependencies:

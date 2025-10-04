@@ -1,17 +1,19 @@
-import { Controller, Get, Query, Req } from '@nestjs/common';
-import { Request } from 'express';
+import { Controller, Get, Query, UseGuards } from '@nestjs/common';
 import { FeedService } from './feed.service';
 import { FeedRequestDto } from './dto/feed-request.dto';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { CurrentUser } from '../auth/current-user.decorator';
+import { AuthenticatedUser } from '../auth/auth-user.interface';
 
 @Controller('feed')
+@UseGuards(JwtAuthGuard)
 export class FeedController {
   constructor(private readonly feedService: FeedService) {}
 
   @Get()
-  async getFeed(@Query() query: FeedRequestDto, @Req() req: Request) {
+  async getFeed(@Query() query: FeedRequestDto, @CurrentUser() user: AuthenticatedUser) {
     const count = query.count ?? undefined;
-    const userId = req.header('x-user-id') || undefined;
-    const { cards, nextCursor } = await this.feedService.getFeed(userId, count);
+    const { cards, nextCursor } = await this.feedService.getFeed(user.sub, count);
     return { cards, nextCursor };
   }
 }

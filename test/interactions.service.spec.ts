@@ -55,7 +55,9 @@ describe('InteractionsService', () => {
       throw new Error('Seed artwork not found');
     }
 
-    await interactionsService.recordInteraction(undefined, {
+    const user = await usersService.ensureUser();
+
+    await interactionsService.recordInteraction(user.id, {
       artworkId: artwork.id,
       eventType: 'like',
       dwellMs: 2000,

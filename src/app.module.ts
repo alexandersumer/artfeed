@@ -7,6 +7,11 @@ import { FeedModule } from './feed/feed.module';
 import { InteractionsModule } from './interactions/interactions.module';
 import { UsersModule } from './users/users.module';
 import databaseConfig from './database/database.config';
+import { IngestionModule } from './ingestion/ingestion.module';
+import { AuthModule } from './auth/auth.module';
+import { MetricsModule } from './metrics/metrics.module';
+import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
+import { APP_GUARD } from '@nestjs/core';
 
 @Module({
   imports: [
@@ -14,6 +19,7 @@ import databaseConfig from './database/database.config';
       isGlobal: true,
       load: [databaseConfig],
     }),
+    ThrottlerModule.forRoot([{ ttl: 60, limit: 120 }]),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -34,6 +40,15 @@ import databaseConfig from './database/database.config';
     ArtworksModule,
     FeedModule,
     InteractionsModule,
+    IngestionModule,
+    AuthModule,
+    MetricsModule,
+  ],
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
+    },
   ],
 })
 export class AppModule {}

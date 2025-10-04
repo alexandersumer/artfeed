@@ -12,6 +12,9 @@ import { FeedImpression } from '../src/feed/feed_impression.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Artwork } from '../src/artworks/artwork.entity';
 import { Server } from 'http';
+import { AuthModule } from '../src/auth/auth.module';
+import { JwtService } from '@nestjs/jwt';
+import { ConfigModule } from '@nestjs/config';
 
 const unitVector = (value: number[]): number[] => {
   const magnitude = Math.sqrt(value.reduce((sum, v) => sum + v * v, 0));
@@ -22,10 +25,20 @@ describe('FeedController (integration)', () => {
   let app: INestApplication;
   let impressionRepository: Repository<FeedImpression>;
   let artworksService: ArtworksService;
-
+  let jwtService: JwtService;
+  
   beforeAll(async () => {
+    process.env.JWT_SECRET = 'test-secret';
     const moduleRef = await Test.createTestingModule({
-      imports: [SqliteTestingModule(), ArtworksModule, UsersModule, RecommendationModule, FeedModule],
+      imports: [
+        ConfigModule.forRoot({ isGlobal: true }),
+        SqliteTestingModule(),
+        ArtworksModule,
+        UsersModule,
+        RecommendationModule,
+        AuthModule,
+        FeedModule,
+      ],
     }).compile();
 
     app = moduleRef.createNestApplication();
@@ -34,6 +47,7 @@ describe('FeedController (integration)', () => {
 
     impressionRepository = moduleRef.get(getRepositoryToken(FeedImpression));
     artworksService = moduleRef.get(ArtworksService);
+    jwtService = moduleRef.get(JwtService);
 
     const now = new Date();
     const seed = async (vector: number[], artist: string) => {
@@ -62,7 +76,10 @@ describe('FeedController (integration)', () => {
 
   it('returns feed cards with impressions logged', async () => {
     const server = app.getHttpServer() as Server;
-    const response = await request(server).get('/v1/feed');
+    const token = jwtService.sign({ sub: 'test-user' });
+    const response = await request(server)
+      .get('/v1/feed')
+      .set('Authorization', `Bearer ${token}`);
 
     expect(response.status).toBe(200);
     expect(Array.isArray(response.body.cards)).toBe(true);

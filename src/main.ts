@@ -1,6 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe, Logger } from '@nestjs/common';
+import { HttpLoggingInterceptor } from './shared/logging/http-logging.interceptor';
 
 const logger = new Logger('Bootstrap');
 
@@ -13,6 +14,7 @@ async function bootstrap() {
       forbidNonWhitelisted: true,
     }),
   );
+  app.useGlobalInterceptors(new HttpLoggingInterceptor());
   app.setGlobalPrefix('v1');
   await app.listen(process.env.PORT || 3000);
 }
