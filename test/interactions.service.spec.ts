@@ -10,6 +10,7 @@ import { Repository } from 'typeorm';
 import { Interaction } from '../src/interactions/interaction.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { UsersService } from '../src/users/users.service';
+import { ConfigModule } from '@nestjs/config';
 
 const vector = (values: number[]): number[] => {
   const magnitude = Math.sqrt(values.reduce((sum, v) => sum + v * v, 0));
@@ -25,7 +26,14 @@ describe('InteractionsService', () => {
 
   beforeEach(async () => {
     module = await Test.createTestingModule({
-      imports: [SqliteTestingModule(), ArtworksModule, UsersModule, RecommendationModule, InteractionsModule],
+      imports: [
+        ConfigModule.forRoot({ isGlobal: true, ignoreEnvFile: true }),
+        SqliteTestingModule(),
+        ArtworksModule,
+        UsersModule,
+        RecommendationModule,
+        InteractionsModule,
+      ],
     }).compile();
 
     interactionsService = module.get(InteractionsService);

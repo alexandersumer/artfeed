@@ -1,17 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import { CreateInteractionDto } from '../interactions/dto/create-interaction.dto';
-import { Artwork } from '../artworks/artwork.entity';
-
-interface RankOptions {
-  modelVersion: string;
-  freshnessHalfLifeDays?: number;
-}
-
-interface RankedCandidate {
-  artwork: Artwork;
-  score: number;
-}
+import { ArtworkWithEmbedding } from '../artworks/types';
+import { RankOptions, RankedCandidate } from './personalization.port';
 
 const DEFAULT_HALF_LIFE = 14; // days
 const POSITIVE_EVENTS = new Set(['like', 'save', 'open']);
@@ -23,7 +14,7 @@ export class RecommendationService {
 
   rankCandidates(
     userEmbedding: number[] | undefined,
-    candidates: Artwork[],
+    candidates: ArtworkWithEmbedding[],
     options: RankOptions,
   ): RankedCandidate[] {
     const now = Date.now();
@@ -53,7 +44,7 @@ export class RecommendationService {
     return decay;
   }
 
-  private computeDiversityPenalty(artwork: Artwork, candidates: Artwork[]): number {
+  private computeDiversityPenalty(artwork: ArtworkWithEmbedding, candidates: ArtworkWithEmbedding[]): number {
     if (!artwork.artist) {
       return 0.5;
     }

@@ -12,7 +12,7 @@ export class UserProfile {
   @Column({ type: 'datetime', name: 'last_updated', nullable: true })
   lastUpdated?: Date;
 
-  @OneToOne(() => User, (user) => user.profile, { onDelete: 'CASCADE' })
+  @OneToOne(() => User, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'user_id' })
   user!: User;
 }

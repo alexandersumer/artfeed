@@ -1,8 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { Artwork } from './artwork.entity';
 import { ArtworkEmbedding } from './artwork_embedding.entity';
+import { ArtworkWithEmbedding } from './types';
 
 @Injectable()
 export class ArtworksService {
@@ -40,24 +41,50 @@ export class ArtworksService {
     return saved;
   }
 
-  async findById(id: number): Promise<Artwork | null> {
-    return this.artworkRepository.findOne({ where: { id }, relations: ['embedding'] });
+  async findById(id: number): Promise<ArtworkWithEmbedding | null> {
+    const artwork = await this.artworkRepository.findOne({ where: { id } });
+    if (!artwork) {
+      return null;
+    }
+    await this.attachEmbeddings([artwork]);
+    return artwork as ArtworkWithEmbedding;
   }
 
-  async findBySourceIdentifier(source: string, sourceId: string): Promise<Artwork | null> {
-    return this.artworkRepository.findOne({ where: { source, sourceId }, relations: ['embedding'] });
+  async findBySourceIdentifier(source: string, sourceId: string): Promise<ArtworkWithEmbedding | null> {
+    const artwork = await this.artworkRepository.findOne({ where: { source, sourceId } });
+    if (!artwork) {
+      return null;
+    }
+    await this.attachEmbeddings([artwork]);
+    return artwork as ArtworkWithEmbedding;
   }
 
-  async findCandidates(limit: number, publicOnly = true): Promise<Artwork[]> {
-    return this.artworkRepository.find({
+  async findCandidates(limit: number, publicOnly = true): Promise<ArtworkWithEmbedding[]> {
+    const artworks = await this.artworkRepository.find({
       where: publicOnly ? { isPublicDomain: true } : {},
-      relations: ['embedding'],
       take: limit,
       order: { createdAt: 'DESC' },
     });
+    await this.attachEmbeddings(artworks);
+    return artworks as ArtworkWithEmbedding[];
   }
 
   async listAllEmbeddings(): Promise<ArtworkEmbedding[]> {
     return this.embeddingRepository.find({ relations: ['artwork'] });
+  }
+
+  private async attachEmbeddings(artworks: Artwork[]): Promise<void> {
+    if (artworks.length === 0) {
+      return;
+    }
+    const ids = artworks.map((item) => item.id);
+    const embeddings = await this.embeddingRepository.find({ where: { artworkId: In(ids) } });
+    const lookup = new Map(embeddings.map((embedding) => [embedding.artworkId, embedding]));
+    artworks.forEach((artwork) => {
+      const embedding = lookup.get(artwork.id);
+      if (embedding) {
+        (artwork as ArtworkWithEmbedding).embedding = embedding;
+      }
+    });
   }
 }

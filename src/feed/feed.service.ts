@@ -1,12 +1,12 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { FeedImpression } from './feed_impression.entity';
 import { FeedCardDto } from './dto/feed-card.dto';
 import { ArtworksService } from '../artworks/artworks.service';
-import { RecommendationService } from '../recommendation/recommendation.service';
 import { UsersService } from '../users/users.service';
 import { Artwork } from '../artworks/artwork.entity';
+import { PERSONALIZATION_PORT, PersonalizationPort } from '../recommendation/personalization.port';
 
 const DEFAULT_COUNT = 20;
 const CANDIDATE_POOL = 200;
@@ -18,7 +18,8 @@ export class FeedService {
     @InjectRepository(FeedImpression)
     private readonly impressionRepository: Repository<FeedImpression>,
     private readonly artworksService: ArtworksService,
-    private readonly recommendationService: RecommendationService,
+    @Inject(PERSONALIZATION_PORT)
+    private readonly personalization: PersonalizationPort,
     private readonly usersService: UsersService,
   ) {}
 
@@ -28,7 +29,7 @@ export class FeedService {
 
     const candidates = await this.artworksService.findCandidates(CANDIDATE_POOL);
 
-    const ranked = this.recommendationService.rankCandidates(
+    const ranked = this.personalization.rankCandidates(
       profile?.embedding,
       candidates,
       {

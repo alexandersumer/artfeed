@@ -5,8 +5,9 @@ import { UsersModule } from '../src/users/users.module';
 import { UsersService } from '../src/users/users.service';
 import { SqliteTestingModule } from './utils/db';
 import { CreateInteractionDto } from '../src/interactions/dto/create-interaction.dto';
-import { Artwork } from '../src/artworks/artwork.entity';
 import { ArtworkEmbedding } from '../src/artworks/artwork_embedding.entity';
+import { ArtworkWithEmbedding } from '../src/artworks/types';
+import { ConfigModule } from '@nestjs/config';
 
 const unitVector = (value: number[]): number[] => {
   const magnitude = Math.sqrt(value.reduce((sum, v) => sum + v * v, 0));
@@ -20,7 +21,7 @@ describe('RecommendationService', () => {
 
   beforeEach(async () => {
     module = await Test.createTestingModule({
-      imports: [SqliteTestingModule(), UsersModule, RecommendationModule],
+      imports: [ConfigModule.forRoot({ isGlobal: true, ignoreEnvFile: true }), SqliteTestingModule(), UsersModule, RecommendationModule],
     }).compile();
 
     service = module.get(RecommendationService);
@@ -68,7 +69,7 @@ describe('RecommendationService', () => {
 
   it('ranks candidates preferring closer embeddings', () => {
     const userEmbedding = unitVector([1, 0, 0]);
-    const makeArtwork = (id: number, vector: number[], artist = 'artist'): Artwork => ({
+    const makeArtwork = (id: number, vector: number[], artist = 'artist'): ArtworkWithEmbedding => ({
       id,
       source: 'test',
       sourceId: `source-${id}`,
@@ -91,5 +92,53 @@ describe('RecommendationService', () => {
     const ranked = service.rankCandidates(userEmbedding, candidates, { modelVersion: 'test' });
     expect(ranked[0].artwork.id).toBe(1);
     expect(ranked[ranked.length - 1].artwork.id).toBe(2);
+  });
+
+  it('characterizes blended ranking of similarity, diversity, freshness, and exploration', () => {
+    const baseTime = new Date('2025-01-01T00:00:00.000Z');
+    const nowSpy = jest.spyOn(Date, 'now').mockReturnValue(baseTime.getTime());
+
+    const makeArtwork = (
+      id: number,
+      vector: number[],
+      artist: string | undefined,
+      createdOffsetDays: number,
+    ): ArtworkWithEmbedding => ({
+      id,
+      source: 'test',
+      sourceId: `source-${id}`,
+      title: `Artwork ${id}`,
+      artist,
+      isPublicDomain: true,
+      createdAt: new Date(baseTime.getTime() - createdOffsetDays * 24 * 60 * 60 * 1000),
+      embedding: {
+        artworkId: id,
+        embedding: unitVector(vector),
+      } as ArtworkEmbedding,
+    });
+
+    const userEmbedding = unitVector([0.7, 0.2, 0.1]);
+    const candidates = [
+      makeArtwork(1, [0.6, 0.3, 0.1], 'artist-a', 1),
+      makeArtwork(2, [0.4, 0.6, 0], 'artist-a', 7),
+      makeArtwork(3, [0.1, 0.1, 0.98], 'artist-b', 0.2),
+      makeArtwork(4, [0.7, 0.2, 0.1], undefined, 30),
+    ];
+
+    const ranked = service.rankCandidates(userEmbedding, candidates, {
+      modelVersion: 'characterization',
+      freshnessHalfLifeDays: 14,
+    });
+
+    expect(
+      ranked.map((entry) => ({ id: entry.artwork.id, score: entry.score })),
+    ).toEqual([
+      { id: 1, score: 0.8582 },
+      { id: 4, score: 0.7996 },
+      { id: 2, score: 0.6864 },
+      { id: 3, score: 0.468 },
+    ]);
+
+    nowSpy.mockRestore();
   });
 });

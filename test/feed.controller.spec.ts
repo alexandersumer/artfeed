@@ -27,6 +27,9 @@ describe('FeedController (integration)', () => {
   let artworksService: ArtworksService;
   let jwtService: JwtService;
   
+  const baseTime = new Date('2025-01-01T00:00:00.000Z');
+  let seededArtworkIds: number[] = [];
+
   beforeAll(async () => {
     process.env.JWT_SECRET = 'test-secret';
     const moduleRef = await Test.createTestingModule({
@@ -49,25 +52,27 @@ describe('FeedController (integration)', () => {
     artworksService = moduleRef.get(ArtworksService);
     jwtService = moduleRef.get(JwtService);
 
-    const now = new Date();
-    const seed = async (vector: number[], artist: string) => {
+    const seed = async (vector: number[], artist: string, label: string) => {
       const artworkPayload: Partial<Artwork> = {
         source: 'test',
-        sourceId: `${artist}-${Math.random()}`,
-        title: `Artwork ${artist}`,
+        sourceId: `${artist}-${label}`,
+        title: `Artwork ${artist}-${label}`,
         artist,
         isPublicDomain: true,
         creditLine: 'Test Museum',
         imageUrl1080: `https://example.com/${artist}_1080.jpg`,
         imageUrlFull: `https://example.com/${artist}_full.jpg`,
-        createdAt: now,
+        createdAt: baseTime,
       };
-      await artworksService.upsertArtwork(artworkPayload, unitVector(vector), 'clip-test');
+      const saved = await artworksService.upsertArtwork(artworkPayload, unitVector(vector), 'clip-test');
+      return saved.id;
     };
 
-    await seed([0.9, 0.1, 0], 'artist-a');
-    await seed([0.8, 0.2, 0], 'artist-b');
-    await seed([0.1, 0.9, 0], 'artist-b');
+    seededArtworkIds = [
+      await seed([0.9, 0.1, 0], 'artist-a', 'primary'),
+      await seed([0.8, 0.2, 0], 'artist-b', 'blend'),
+      await seed([0.1, 0.9, 0], 'artist-b', 'off-axis'),
+    ];
   });
 
   afterAll(async () => {
@@ -77,13 +82,43 @@ describe('FeedController (integration)', () => {
   it('returns feed cards with impressions logged', async () => {
     const server = app.getHttpServer() as Server;
     const token = jwtService.sign({ sub: 'test-user' });
+    const nowSpy = jest.spyOn(Date, 'now').mockReturnValue(baseTime.getTime());
     const response = await request(server)
       .get('/v1/feed')
       .set('Authorization', `Bearer ${token}`);
+    nowSpy.mockRestore();
 
     expect(response.status).toBe(200);
     expect(Array.isArray(response.body.cards)).toBe(true);
     expect(response.body.cards.length).toBe(3);
+
+    expect(
+      response.body.cards.map((card: { id: string; title: string; modelVersion: string; score: number }) => ({
+        id: Number(card.id),
+        title: card.title,
+        modelVersion: card.modelVersion,
+        score: card.score,
+      })),
+    ).toEqual([
+      {
+        id: seededArtworkIds[0],
+        title: 'Artwork artist-a-primary',
+        modelVersion: 'hybrid-0.1',
+        score: 0.299,
+      },
+      {
+        id: seededArtworkIds[2],
+        title: 'Artwork artist-b-off-axis',
+        modelVersion: 'hybrid-0.1',
+        score: 0.226,
+      },
+      {
+        id: seededArtworkIds[1],
+        title: 'Artwork artist-b-blend',
+        modelVersion: 'hybrid-0.1',
+        score: 0.225,
+      },
+    ]);
 
     const impressions = await impressionRepository.find({ order: { rank: 'ASC' } });
     expect(impressions.length).toBe(3);

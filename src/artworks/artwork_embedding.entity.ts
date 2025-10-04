@@ -15,7 +15,7 @@ export class ArtworkEmbedding {
   @Column({ type: 'text', nullable: true })
   phash?: string;
 
-  @OneToOne(() => Artwork, (artwork) => artwork.embedding, { onDelete: 'CASCADE' })
+  @OneToOne(() => Artwork, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'artwork_id' })
   artwork!: Artwork;
 }

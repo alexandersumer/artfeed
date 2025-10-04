@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Interaction } from './interaction.entity';
@@ -6,7 +6,7 @@ import { CreateInteractionDto } from './dto/create-interaction.dto';
 import { ArtworksService } from '../artworks/artworks.service';
 import { FeedImpression } from '../feed/feed_impression.entity';
 import { UsersService } from '../users/users.service';
-import { RecommendationService } from '../recommendation/recommendation.service';
+import { PERSONALIZATION_PORT, PersonalizationPort } from '../recommendation/personalization.port';
 
 @Injectable()
 export class InteractionsService {
@@ -17,7 +17,8 @@ export class InteractionsService {
     private readonly impressionRepository: Repository<FeedImpression>,
     private readonly artworksService: ArtworksService,
     private readonly usersService: UsersService,
-    private readonly recommendationService: RecommendationService,
+    @Inject(PERSONALIZATION_PORT)
+    private readonly personalization: PersonalizationPort,
   ) {}
 
   async recordInteraction(userId: string, dto: CreateInteractionDto): Promise<void> {
@@ -38,7 +39,7 @@ export class InteractionsService {
     });
     await this.interactionRepository.save(entity);
 
-    await this.recommendationService.updateTasteFromInteraction(user.id, artwork.embedding.embedding, dto);
+    await this.personalization.updateTasteFromInteraction(user.id, artwork.embedding.embedding, dto);
   }
 
   async recordImpressions(

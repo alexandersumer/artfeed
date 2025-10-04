@@ -1,12 +1,4 @@
-import {
-  Column,
-  CreateDateColumn,
-  Entity,
-  Index,
-  OneToOne,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
-import { ArtworkEmbedding } from './artwork_embedding.entity';
+import { Column, CreateDateColumn, Entity, Index, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity({ name: 'artworks' })
 @Index(['source', 'sourceId'], { unique: true })
@@ -77,6 +69,4 @@ export class Artwork {
   @CreateDateColumn({ name: 'created_at' })
   createdAt!: Date;
 
-  @OneToOne(() => ArtworkEmbedding, (embedding) => embedding.artwork)
-  embedding?: ArtworkEmbedding;
 }

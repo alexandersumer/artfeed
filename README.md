@@ -26,6 +26,8 @@ pnpm run migration:run
 
 Set database credentials through environment variables (`DB_HOST`, `DB_PORT`, `DB_USER`, `DB_PASSWORD`, `DB_NAME`). During local development you can enable schema sync by setting `DB_AUTO_SYNC=true`.
 
+Personalization experiments can be swapped via the `PERSONALIZATION_ENGINE` environment variable. The default `default` engine wraps the existing recommendation service; alternative adapters can be rolled out incrementally without redeploying the core modules.
+
 ### Authentication & Security
 
 - Request a feed or post interactions with a Bearer token obtained from `POST /v1/auth/anonymous` (or your own identity provider). Tokens are JWTs signed with `JWT_SECRET` (default `change-me`) and expire based on `JWT_TTL` (default `7d`).
