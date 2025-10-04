@@ -1,4 +1,5 @@
 """CLI to push normalized artwork records into the Nest ingestion endpoint."""
+
 from __future__ import annotations
 
 import argparse
@@ -6,7 +7,7 @@ import asyncio
 import hashlib
 import math
 import os
-from typing import AsyncIterator, Dict, Iterable, List, Sequence
+from collections.abc import AsyncIterator, Iterable, Sequence
 
 import httpx
 
@@ -18,9 +19,9 @@ DEFAULT_BATCH_SIZE = 50
 DEFAULT_EMBEDDING_DIM = 64
 
 
-def generate_embedding(record: ArtworkRecord, *, dims: int = DEFAULT_EMBEDDING_DIM) -> List[float]:
+def generate_embedding(record: ArtworkRecord, *, dims: int = DEFAULT_EMBEDDING_DIM) -> list[float]:
     """Generate a deterministic pseudo-embedding from the record identity."""
-    digest = hashlib.sha256(f"{record.source}:{record.source_id}".encode("utf-8")).digest()
+    digest = hashlib.sha256(f"{record.source}:{record.source_id}".encode()).digest()
     values = list(digest) * ((dims + len(digest) - 1) // len(digest))
     vector = [value / 255.0 for value in values[:dims]]
     magnitude = math.sqrt(sum(component * component for component in vector))
@@ -45,7 +46,7 @@ async def iter_records(source: str, *, limit: int | None = None) -> AsyncIterato
         raise ValueError(f"Unsupported source '{source}'")
 
 
-def build_payload(record: ArtworkRecord, embedding: Sequence[float], *, model: str) -> Dict:
+def build_payload(record: ArtworkRecord, embedding: Sequence[float], *, model: str) -> dict:
     return {
         "source": record.source,
         "sourceId": record.source_id,
@@ -83,7 +84,7 @@ async def send_batches(
 ) -> None:
     headers = {"x-ingestion-key": api_key}
     async with httpx.AsyncClient(base_url=api_base, headers=headers, timeout=60) as client:
-        batch: List[Dict] = []
+        batch: list[dict] = []
         count = 0
         async for record in iter_records(source, limit=limit):
             embedding = generate_embedding(record)
@@ -104,8 +105,14 @@ async def send_batches(
 def parse_args(argv: Iterable[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("source", choices=["met", "aic"], help="Ingestion source to export")
-    parser.add_argument("--api-base", default=os.environ.get("ARTFEED_API_BASE", "http://localhost:3000"))
-    parser.add_argument("--api-key", default=os.environ.get("INGESTION_API_KEY"), help="Shared secret for ingestion endpoint")
+    parser.add_argument(
+        "--api-base", default=os.environ.get("ARTFEED_API_BASE", "http://localhost:3000")
+    )
+    parser.add_argument(
+        "--api-key",
+        default=os.environ.get("INGESTION_API_KEY"),
+        help="Shared secret for ingestion endpoint",
+    )
     parser.add_argument("--batch-size", type=int, default=DEFAULT_BATCH_SIZE)
     parser.add_argument("--limit", type=int, default=None, help="Optional limit on records fetched")
     parser.add_argument("--embedding-model", default="clip-vit-b32")

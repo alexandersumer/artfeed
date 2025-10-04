@@ -1,8 +1,8 @@
-import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { User } from './user.entity';
-import { UserProfile } from './user_profile.entity';
+import { Injectable } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository } from "typeorm";
+import { User } from "./user.entity";
+import { UserProfile } from "./user_profile.entity";
 
 @Injectable()
 export class UsersService {
@@ -14,10 +14,12 @@ export class UsersService {
 
   async ensureUser(
     userId?: string,
-    initial?: Partial<Pick<User, 'locale' | 'country'>>,
+    initial?: Partial<Pick<User, "locale" | "country">>,
   ): Promise<User> {
     if (userId) {
-      const existing = await this.userRepository.findOne({ where: { id: userId } });
+      const existing = await this.userRepository.findOne({
+        where: { id: userId },
+      });
       if (existing) {
         return existing;
       }
@@ -31,8 +33,16 @@ export class UsersService {
     return this.profileRepository.findOne({ where: { userId } });
   }
 
-  async upsertProfile(userId: string, embedding: number[], now: Date): Promise<UserProfile> {
-    const entity = this.profileRepository.create({ userId, embedding, lastUpdated: now });
+  async upsertProfile(
+    userId: string,
+    embedding: number[],
+    now: Date,
+  ): Promise<UserProfile> {
+    const entity = this.profileRepository.create({
+      userId,
+      embedding,
+      lastUpdated: now,
+    });
     return this.profileRepository.save(entity);
   }
 }

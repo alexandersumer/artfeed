@@ -10,8 +10,7 @@
     "lint": "eslint --ext .ts src test",
     "test": "pnpm run test:all",
     "test:unit": "jest --runInBand",
-    "pretest:ingestion": "python3 -m pip install -r ingestion/requirements.txt",
-    "test:ingestion": "python3 -m pytest ingestion/tests",
+    "test:ingestion": "uv run pytest ingestion/tests",
     "test:all": "pnpm run lint && pnpm run test:unit && pnpm run test:ingestion",
     "ci": "pnpm run build && pnpm run test:all",
     "migration:run": "ts-node -r tsconfig-paths/register src/database/run-migrations.ts",
@@ -66,7 +65,8 @@
     "ts-jest": "^29.4.4",
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "prettier": "^3.3.3"
   },
   "packageManager": "pnpm@9.12.1"
 }

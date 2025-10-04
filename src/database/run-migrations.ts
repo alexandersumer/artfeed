@@ -1,4 +1,4 @@
-import AppDataSource from './data-source';
+import AppDataSource from "./data-source";
 
 async function runMigrations() {
   await AppDataSource.initialize();
@@ -13,6 +13,6 @@ async function runMigrations() {
 }
 
 runMigrations().catch((error) => {
-  console.error('Migration failed', error);
+  console.error("Migration failed", error);
   process.exit(1);
 });

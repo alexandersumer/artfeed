@@ -1,16 +1,19 @@
-import { Inject, Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { FeedImpression } from './feed_impression.entity';
-import { FeedCardDto } from './dto/feed-card.dto';
-import { ArtworksService } from '../artworks/artworks.service';
-import { UsersService } from '../users/users.service';
-import { Artwork } from '../artworks/artwork.entity';
-import { PERSONALIZATION_PORT, PersonalizationPort } from '../recommendation/personalization.port';
+import { Inject, Injectable } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository } from "typeorm";
+import { FeedImpression } from "./feed_impression.entity";
+import { FeedCardDto } from "./dto/feed-card.dto";
+import { ArtworksService } from "../artworks/artworks.service";
+import { UsersService } from "../users/users.service";
+import { Artwork } from "../artworks/artwork.entity";
+import {
+  PERSONALIZATION_PORT,
+  PersonalizationPort,
+} from "../recommendation/personalization.port";
 
 const DEFAULT_COUNT = 20;
 const CANDIDATE_POOL = 200;
-const MODEL_VERSION = 'hybrid-0.1';
+const MODEL_VERSION = "hybrid-0.1";
 
 @Injectable()
 export class FeedService {
@@ -23,11 +26,15 @@ export class FeedService {
     private readonly usersService: UsersService,
   ) {}
 
-  async getFeed(userId: string, count = DEFAULT_COUNT): Promise<{ cards: FeedCardDto[]; nextCursor?: string }> {
+  async getFeed(
+    userId: string,
+    count = DEFAULT_COUNT,
+  ): Promise<{ cards: FeedCardDto[]; nextCursor?: string }> {
     const user = await this.usersService.ensureUser(userId);
     const profile = await this.usersService.getProfile(user.id);
 
-    const candidates = await this.artworksService.findCandidates(CANDIDATE_POOL);
+    const candidates =
+      await this.artworksService.findCandidates(CANDIDATE_POOL);
 
     const ranked = this.personalization.rankCandidates(
       profile?.embedding,
@@ -37,7 +44,9 @@ export class FeedService {
       },
     );
 
-    const cards = ranked.slice(0, count).map((item) => this.toFeedCard(item.artwork, item.score));
+    const cards = ranked
+      .slice(0, count)
+      .map((item) => this.toFeedCard(item.artwork, item.score));
 
     await this.impressionRepository.save(
       cards.map((card, index) =>
@@ -51,7 +60,10 @@ export class FeedService {
       ),
     );
 
-    return { cards, nextCursor: cards.length ? cards[cards.length - 1].id : undefined };
+    return {
+      cards,
+      nextCursor: cards.length ? cards[cards.length - 1].id : undefined,
+    };
   }
 
   private toFeedCard(artwork: Artwork, score: number): FeedCardDto {
@@ -65,7 +77,9 @@ export class FeedService {
       image: {
         feed: artwork.imageUrl1080,
         detail: {
-          iiif: artwork.iiifImageBase ? `${artwork.iiifImageBase}/full/full/0/default.jpg` : undefined,
+          iiif: artwork.iiifImageBase
+            ? `${artwork.iiifImageBase}/full/full/0/default.jpg`
+            : undefined,
           full: artwork.imageUrlFull,
         },
       },

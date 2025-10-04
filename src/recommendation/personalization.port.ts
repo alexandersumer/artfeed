@@ -1,5 +1,5 @@
-import { ArtworkWithEmbedding } from '../artworks/types';
-import { CreateInteractionDto } from '../interactions/dto/create-interaction.dto';
+import { ArtworkWithEmbedding } from "../artworks/types";
+import { CreateInteractionDto } from "../interactions/dto/create-interaction.dto";
 
 export interface RankOptions {
   modelVersion: string;
@@ -25,4 +25,4 @@ export interface PersonalizationPort {
   ): Promise<void>;
 }
 
-export const PERSONALIZATION_PORT = Symbol('PERSONALIZATION_PORT');
+export const PERSONALIZATION_PORT = Symbol("PERSONALIZATION_PORT");

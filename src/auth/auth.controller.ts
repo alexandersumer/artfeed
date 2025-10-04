@@ -1,7 +1,7 @@
-import { Body, Controller, Post } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
-import { IsOptional, IsString, MaxLength } from 'class-validator';
-import { UsersService } from '../users/users.service';
+import { Body, Controller, Post } from "@nestjs/common";
+import { JwtService } from "@nestjs/jwt";
+import { IsOptional, IsString, MaxLength } from "class-validator";
+import { UsersService } from "../users/users.service";
 
 class AnonymousTokenDto {
   @IsOptional()
@@ -20,11 +20,14 @@ class AnonymousTokenDto {
   userId?: string;
 }
 
-@Controller('auth')
+@Controller("auth")
 export class AuthController {
-  constructor(private readonly usersService: UsersService, private readonly jwtService: JwtService) {}
+  constructor(
+    private readonly usersService: UsersService,
+    private readonly jwtService: JwtService,
+  ) {}
 
-  @Post('anonymous')
+  @Post("anonymous")
   async anonymousToken(@Body() dto: AnonymousTokenDto) {
     const user = await this.usersService.ensureUser(dto.userId, {
       locale: dto.locale,

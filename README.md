@@ -44,6 +44,18 @@ Personalization experiments can be swapped via the `PERSONALIZATION_ENGINE` envi
   ```
   The CLI batches normalized records from the Python exporters and calls `POST /v1/internal/ingestion/batch`, which persists both artwork metadata and embeddings idempotently.
 
+## Tooling & Formatting
+
+The Python ingestion utilities now use the `uv` CLI for dependency management and code quality tooling.
+
+```bash
+uv sync
+uv run pre-commit install
+uv run pre-commit run --all-files
+```
+
+The shared pre-commit hooks format and lint Python (`uv run ruff format`, `uv run ruff check --fix --unsafe-fixes`) and TypeScript/Markdown (`pnpm exec prettier --write`, `pnpm exec eslint --fix --max-warnings 0`).
+
 ## Running Tests & Quality Gates
 
 - **All checks (parity with CI):**
@@ -58,7 +70,7 @@ Personalization experiments can be swapped via the `PERSONALIZATION_ENGINE` envi
   ```bash
   pnpm run test:ingestion
   ```
-  The command installs ingestion dependencies via `python3 -m pip install -r ingestion/requirements.txt` before executing `pytest`.
+  The command executes `pytest` via `uv run`, so dependencies defined in `pyproject.toml` stay in sync without managing a separate virtualenv.
 - **Linting:**
   ```bash
   pnpm run lint

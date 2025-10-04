@@ -1,9 +1,10 @@
 """Client utilities for ingesting artworks from The Metropolitan Museum of Art."""
+
 from __future__ import annotations
 
 import asyncio
+from collections.abc import AsyncIterator, Iterable
 from dataclasses import asdict
-from typing import AsyncIterator, Dict, Iterable, List, Optional
 
 import httpx
 
@@ -12,13 +13,15 @@ from .models import ArtworkRecord, ImageVariants
 MET_API_ROOT = "https://collectionapi.metmuseum.org/public/collection/v1"
 
 
-async def fetch_json(client: httpx.AsyncClient, url: str, params: Optional[Dict[str, str]] = None) -> dict:
+async def fetch_json(
+    client: httpx.AsyncClient, url: str, params: dict[str, str] | None = None
+) -> dict:
     response = await client.get(url, params=params, timeout=30)
     response.raise_for_status()
     return response.json()
 
 
-def normalize_met_item(raw: dict) -> Optional[ArtworkRecord]:
+def normalize_met_item(raw: dict) -> ArtworkRecord | None:
     if not raw.get("primaryImage") and not raw.get("primaryImageSmall"):
         return None
 
@@ -53,7 +56,11 @@ def normalize_met_item(raw: dict) -> Optional[ArtworkRecord]:
         width=raw.get("width"),
         height=raw.get("height"),
         is_public_domain=bool(raw.get("isPublicDomain")),
-        tags=[tag.get("term") for tag in raw.get("tags", []) if isinstance(tag, dict) and tag.get("term")],
+        tags=[
+            tag.get("term")
+            for tag in raw.get("tags", [])
+            if isinstance(tag, dict) and tag.get("term")
+        ],
         raw=raw,
     )
 
@@ -63,7 +70,7 @@ async def iter_met_records(
     *,
     query: str = "*",
     chunk_size: int = 100,
-    max_objects: Optional[int] = None,
+    max_objects: int | None = None,
 ) -> AsyncIterator[ArtworkRecord]:
     search_payload = await fetch_json(
         client,
@@ -88,11 +95,14 @@ async def iter_met_records(
 async def export_met_records(
     *,
     query: str = "*",
-    max_objects: Optional[int] = None,
-    output: Optional[str] = None,
-) -> List[ArtworkRecord]:
+    max_objects: int | None = None,
+    output: str | None = None,
+) -> list[ArtworkRecord]:
     async with httpx.AsyncClient() as client:
-        records = [record async for record in iter_met_records(client, query=query, max_objects=max_objects)]
+        records = [
+            record
+            async for record in iter_met_records(client, query=query, max_objects=max_objects)
+        ]
 
     if output:
         import json

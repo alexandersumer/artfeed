@@ -1,4 +1,4 @@
-import { Type } from 'class-transformer';
+import { Type } from "class-transformer";
 import {
   ArrayNotEmpty,
   IsArray,
@@ -10,7 +10,7 @@ import {
   IsString,
   MaxLength,
   ValidateNested,
-} from 'class-validator';
+} from "class-validator";
 
 class ImageDetailDto {
   @IsOptional()

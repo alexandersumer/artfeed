@@ -1,6 +1,6 @@
-import { Injectable } from '@nestjs/common';
-import { ArtworksService } from '../artworks/artworks.service';
-import { IngestArtworkDto } from './dto/ingest-artwork.dto';
+import { Injectable } from "@nestjs/common";
+import { ArtworksService } from "../artworks/artworks.service";
+import { IngestArtworkDto } from "./dto/ingest-artwork.dto";
 
 export interface IngestionResult {
   created: number;
@@ -16,12 +16,15 @@ export class IngestionService {
     let updated = 0;
 
     for (const item of items) {
-      const existing = await this.artworksService.findBySourceIdentifier(item.source, item.sourceId);
+      const existing = await this.artworksService.findBySourceIdentifier(
+        item.source,
+        item.sourceId,
+      );
       const payload = this.toArtworkPayload(item);
       await this.artworksService.upsertArtwork(
         payload,
         item.embedding,
-        item.embeddingModel ?? 'clip-vit-b32',
+        item.embeddingModel ?? "clip-vit-b32",
         item.perceptualHash,
       );
       if (existing) {
@@ -34,7 +37,9 @@ export class IngestionService {
     return { created, updated };
   }
 
-  private toArtworkPayload(item: IngestArtworkDto): Partial<Parameters<ArtworksService['upsertArtwork']>[0]> {
+  private toArtworkPayload(
+    item: IngestArtworkDto,
+  ): Partial<Parameters<ArtworksService["upsertArtwork"]>[0]> {
     return {
       source: item.source,
       sourceId: item.sourceId,
@@ -49,7 +54,8 @@ export class IngestionService {
       iiifManifestUrl: item.iiifManifestUrl ?? item.imageDetail?.detailIiif,
       iiifImageBase: item.iiifImageBase,
       imageUrlFull: item.imageUrlFull ?? item.imageDetail?.full,
-      imageUrl1080: item.imageUrl1080 ?? item.imageUrlFull ?? item.imageDetail?.full,
+      imageUrl1080:
+        item.imageUrl1080 ?? item.imageUrlFull ?? item.imageDetail?.full,
       license: item.license,
       rights: item.rights,
       creditLine: item.creditLine,

@@ -1,5 +1,12 @@
-import { Type } from 'class-transformer';
-import { IsInt, IsOptional, IsPositive, IsString, MaxLength, Min } from 'class-validator';
+import { Type } from "class-transformer";
+import {
+  IsInt,
+  IsOptional,
+  IsPositive,
+  IsString,
+  MaxLength,
+  Min,
+} from "class-validator";
 
 export class FeedRequestDto {
   @IsOptional()

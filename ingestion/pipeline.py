@@ -1,12 +1,11 @@
 """Utilities to transform ingested ArtworkRecord objects into database payloads."""
-from __future__ import annotations
 
-from typing import Dict, List
+from __future__ import annotations
 
 from .models import ArtworkRecord
 
 
-def record_to_artwork_payload(record: ArtworkRecord) -> Dict:
+def record_to_artwork_payload(record: ArtworkRecord) -> dict:
     """Map an ArtworkRecord to the shape expected by the NestJS data layer."""
     payload = {
         "source": record.source,
@@ -28,7 +27,7 @@ def record_to_artwork_payload(record: ArtworkRecord) -> Dict:
     return payload
 
 
-def record_to_embedding_payload(record: ArtworkRecord, embedding: List[float]) -> Dict:
+def record_to_embedding_payload(record: ArtworkRecord, embedding: list[float]) -> dict:
     return {
         "embedding": embedding,
         "model": "clip-vit-b32",

@@ -1,5 +1,14 @@
-import { Type } from 'class-transformer';
-import { IsIn, IsInt, IsNumber, IsOptional, IsPositive, IsString, MaxLength, Min } from 'class-validator';
+import { Type } from "class-transformer";
+import {
+  IsIn,
+  IsInt,
+  IsNumber,
+  IsOptional,
+  IsPositive,
+  IsString,
+  MaxLength,
+  Min,
+} from "class-validator";
 
 export class CreateInteractionDto {
   @Type(() => Number)
@@ -8,7 +17,7 @@ export class CreateInteractionDto {
   artworkId!: number;
 
   @IsString()
-  @IsIn(['impression', 'like', 'save', 'hide', 'share', 'open', 'zoom', 'skip'])
+  @IsIn(["impression", "like", "save", "hide", "share", "open", "zoom", "skip"])
   eventType!: string;
 
   @IsOptional()

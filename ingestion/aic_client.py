@@ -1,9 +1,9 @@
 """Art Institute of Chicago ingestion helpers."""
+
 from __future__ import annotations
 
-import asyncio
+from collections.abc import AsyncIterator
 from dataclasses import asdict
-from typing import AsyncIterator, Dict, List, Optional
 
 import httpx
 
@@ -12,7 +12,9 @@ from .models import ArtworkRecord, ImageVariants
 AIC_API_ROOT = "https://api.artic.edu/api/v1"
 
 
-async def fetch_json(client: httpx.AsyncClient, url: str, params: Optional[Dict[str, str]] = None) -> dict:
+async def fetch_json(
+    client: httpx.AsyncClient, url: str, params: dict[str, str] | None = None
+) -> dict:
     response = await client.get(url, params=params, timeout=30)
     response.raise_for_status()
     return response.json()
@@ -22,7 +24,7 @@ def build_iiif_image_url(image_id: str, size: str) -> str:
     return f"https://www.artic.edu/iiif/2/{image_id}/full/{size}/0/default.jpg"
 
 
-def normalize_aic_item(raw: dict) -> Optional[ArtworkRecord]:
+def normalize_aic_item(raw: dict) -> ArtworkRecord | None:
     data = raw.get("data") or raw
     if not data.get("is_public_domain"):
         return None
@@ -32,7 +34,7 @@ def normalize_aic_item(raw: dict) -> Optional[ArtworkRecord]:
         return None
 
     iiif_base = f"https://www.artic.edu/iiif/2/{image_id}"
-    dimensions = (data.get("dimensions_detail") or [])
+    dimensions = data.get("dimensions_detail") or []
     first_dimension = dimensions[0] if dimensions else {}
 
     image_variants = ImageVariants(
@@ -67,7 +69,7 @@ async def iter_aic_records(
     client: httpx.AsyncClient,
     *,
     page_size: int = 100,
-    max_pages: Optional[int] = None,
+    max_pages: int | None = None,
 ) -> AsyncIterator[ArtworkRecord]:
     page = 1
     while True:
@@ -77,7 +79,20 @@ async def iter_aic_records(
             params={
                 "page": str(page),
                 "limit": str(page_size),
-                "fields": "id,title,image_id,is_public_domain,artist_title,style_titles,category_titles,subject_titles,credit_line,term_titles,dimensions_detail,copyright_notice",
+                "fields": ",".join([
+                    "id",
+                    "title",
+                    "image_id",
+                    "is_public_domain",
+                    "artist_title",
+                    "style_titles",
+                    "category_titles",
+                    "subject_titles",
+                    "credit_line",
+                    "term_titles",
+                    "dimensions_detail",
+                    "copyright_notice",
+                ]),
                 "is_public_domain": "true",
                 "has_image": "true",
             },
@@ -96,7 +111,9 @@ async def iter_aic_records(
             break
 
 
-async def export_aic_records(*, max_pages: Optional[int] = None, output: Optional[str] = None) -> List[ArtworkRecord]:
+async def export_aic_records(
+    *, max_pages: int | None = None, output: str | None = None
+) -> list[ArtworkRecord]:
     async with httpx.AsyncClient() as client:
         records = [record async for record in iter_aic_records(client, max_pages=max_pages)]
 

@@ -1,8 +1,12 @@
-import { Injectable } from '@nestjs/common';
-import { RecommendationService } from '../recommendation.service';
-import { PersonalizationPort, RankOptions, RankedCandidate } from '../personalization.port';
-import { ArtworkWithEmbedding } from '../../artworks/types';
-import { CreateInteractionDto } from '../../interactions/dto/create-interaction.dto';
+import { Injectable } from "@nestjs/common";
+import { RecommendationService } from "../recommendation.service";
+import {
+  PersonalizationPort,
+  RankOptions,
+  RankedCandidate,
+} from "../personalization.port";
+import { ArtworkWithEmbedding } from "../../artworks/types";
+import { CreateInteractionDto } from "../../interactions/dto/create-interaction.dto";
 
 @Injectable()
 export class DefaultPersonalizationAdapter implements PersonalizationPort {
@@ -13,7 +17,11 @@ export class DefaultPersonalizationAdapter implements PersonalizationPort {
     candidates: ArtworkWithEmbedding[],
     options: RankOptions,
   ): RankedCandidate[] {
-    return this.recommendationService.rankCandidates(userEmbedding, candidates, options);
+    return this.recommendationService.rankCandidates(
+      userEmbedding,
+      candidates,
+      options,
+    );
   }
 
   updateTasteFromInteraction(
@@ -21,6 +29,10 @@ export class DefaultPersonalizationAdapter implements PersonalizationPort {
     artworkEmbedding: number[],
     dto: CreateInteractionDto,
   ): Promise<void> {
-    return this.recommendationService.updateTasteFromInteraction(userId, artworkEmbedding, dto);
+    return this.recommendationService.updateTasteFromInteraction(
+      userId,
+      artworkEmbedding,
+      dto,
+    );
   }
 }

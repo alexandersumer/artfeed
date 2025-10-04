@@ -1,5 +1,5 @@
-from ingestion.met_client import normalize_met_item
 from ingestion.aic_client import normalize_aic_item
+from ingestion.met_client import normalize_met_item
 from ingestion.pipeline import record_to_artwork_payload
 
 

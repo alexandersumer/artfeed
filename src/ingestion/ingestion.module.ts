@@ -1,8 +1,8 @@
-import { Module } from '@nestjs/common';
-import { ArtworksModule } from '../artworks/artworks.module';
-import { IngestionController } from './ingestion.controller';
-import { IngestionService } from './ingestion.service';
-import { IngestionApiKeyGuard } from './ingestion-api-key.guard';
+import { Module } from "@nestjs/common";
+import { ArtworksModule } from "../artworks/artworks.module";
+import { IngestionController } from "./ingestion.controller";
+import { IngestionService } from "./ingestion.service";
+import { IngestionApiKeyGuard } from "./ingestion-api-key.guard";
 
 @Module({
   imports: [ArtworksModule],

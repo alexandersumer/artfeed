@@ -1,17 +1,17 @@
-import { Module } from '@nestjs/common';
-import { ConfigModule, ConfigService } from '@nestjs/config';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { DataSourceOptions } from 'typeorm';
-import { ArtworksModule } from './artworks/artworks.module';
-import { FeedModule } from './feed/feed.module';
-import { InteractionsModule } from './interactions/interactions.module';
-import { UsersModule } from './users/users.module';
-import databaseConfig from './database/database.config';
-import { IngestionModule } from './ingestion/ingestion.module';
-import { AuthModule } from './auth/auth.module';
-import { MetricsModule } from './metrics/metrics.module';
-import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
-import { APP_GUARD } from '@nestjs/core';
+import { Module } from "@nestjs/common";
+import { ConfigModule, ConfigService } from "@nestjs/config";
+import { TypeOrmModule } from "@nestjs/typeorm";
+import { DataSourceOptions } from "typeorm";
+import { ArtworksModule } from "./artworks/artworks.module";
+import { FeedModule } from "./feed/feed.module";
+import { InteractionsModule } from "./interactions/interactions.module";
+import { UsersModule } from "./users/users.module";
+import databaseConfig from "./database/database.config";
+import { IngestionModule } from "./ingestion/ingestion.module";
+import { AuthModule } from "./auth/auth.module";
+import { MetricsModule } from "./metrics/metrics.module";
+import { ThrottlerModule, ThrottlerGuard } from "@nestjs/throttler";
+import { APP_GUARD } from "@nestjs/core";
 
 @Module({
   imports: [
@@ -24,9 +24,11 @@ import { APP_GUARD } from '@nestjs/core';
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: async (configService: ConfigService) => {
-        const databaseConfig = configService.get<DataSourceOptions & { autoSync: boolean }>('database');
+        const databaseConfig = configService.get<
+          DataSourceOptions & { autoSync: boolean }
+        >("database");
         if (!databaseConfig) {
-          throw new Error('Database configuration is missing');
+          throw new Error("Database configuration is missing");
         }
         const { autoSync, ...options } = databaseConfig;
         return {

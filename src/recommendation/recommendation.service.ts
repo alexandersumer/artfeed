@@ -1,12 +1,12 @@
-import { Injectable } from '@nestjs/common';
-import { UsersService } from '../users/users.service';
-import { CreateInteractionDto } from '../interactions/dto/create-interaction.dto';
-import { ArtworkWithEmbedding } from '../artworks/types';
-import { RankOptions, RankedCandidate } from './personalization.port';
+import { Injectable } from "@nestjs/common";
+import { UsersService } from "../users/users.service";
+import { CreateInteractionDto } from "../interactions/dto/create-interaction.dto";
+import { ArtworkWithEmbedding } from "../artworks/types";
+import { RankOptions, RankedCandidate } from "./personalization.port";
 
 const DEFAULT_HALF_LIFE = 14; // days
-const POSITIVE_EVENTS = new Set(['like', 'save', 'open']);
-const NEGATIVE_EVENTS = new Set(['hide', 'skip']);
+const POSITIVE_EVENTS = new Set(["like", "save", "open"]);
+const NEGATIVE_EVENTS = new Set(["hide", "skip"]);
 
 @Injectable()
 export class RecommendationService {
@@ -18,15 +18,34 @@ export class RecommendationService {
     options: RankOptions,
   ): RankedCandidate[] {
     const now = Date.now();
-    const halfLifeMs = (options.freshnessHalfLifeDays ?? DEFAULT_HALF_LIFE) * 24 * 60 * 60 * 1000;
+    const halfLifeMs =
+      (options.freshnessHalfLifeDays ?? DEFAULT_HALF_LIFE) *
+      24 *
+      60 *
+      60 *
+      1000;
 
     const baseScores = candidates.map((artwork) => {
       const embedding = artwork.embedding?.embedding;
-      const similarity = userEmbedding && embedding ? this.cosineSimilarity(userEmbedding, embedding) : 0;
-      const freshnessScore = this.computeFreshnessBoost(now, new Date(artwork.createdAt).getTime(), halfLifeMs);
-      const diversityPenalty = this.computeDiversityPenalty(artwork, candidates);
+      const similarity =
+        userEmbedding && embedding
+          ? this.cosineSimilarity(userEmbedding, embedding)
+          : 0;
+      const freshnessScore = this.computeFreshnessBoost(
+        now,
+        new Date(artwork.createdAt).getTime(),
+        halfLifeMs,
+      );
+      const diversityPenalty = this.computeDiversityPenalty(
+        artwork,
+        candidates,
+      );
       const exploration = this.explorationBonus(artwork.id.toString());
-      const blended = 0.65 * similarity + 0.15 * diversityPenalty + 0.1 * freshnessScore + 0.1 * exploration;
+      const blended =
+        0.65 * similarity +
+        0.15 * diversityPenalty +
+        0.1 * freshnessScore +
+        0.1 * exploration;
       return { artwork, score: blended };
     });
 
@@ -35,7 +54,11 @@ export class RecommendationService {
       .map((item) => ({ ...item, score: Number(item.score.toFixed(4)) }));
   }
 
-  private computeFreshnessBoost(nowMs: number, createdMs: number, halfLifeMs: number): number {
+  private computeFreshnessBoost(
+    nowMs: number,
+    createdMs: number,
+    halfLifeMs: number,
+  ): number {
     const age = nowMs - createdMs;
     if (age <= 0) {
       return 1;
@@ -44,11 +67,16 @@ export class RecommendationService {
     return decay;
   }
 
-  private computeDiversityPenalty(artwork: ArtworkWithEmbedding, candidates: ArtworkWithEmbedding[]): number {
+  private computeDiversityPenalty(
+    artwork: ArtworkWithEmbedding,
+    candidates: ArtworkWithEmbedding[],
+  ): number {
     if (!artwork.artist) {
       return 0.5;
     }
-    const sameArtistCount = candidates.filter((candidate) => candidate.artist === artwork.artist).length;
+    const sameArtistCount = candidates.filter(
+      (candidate) => candidate.artist === artwork.artist,
+    ).length;
     return 1 / Math.max(1, sameArtistCount);
   }
 
@@ -60,16 +88,26 @@ export class RecommendationService {
     return (hash % 100) / 100;
   }
 
-  async updateTasteFromInteraction(userId: string, artworkEmbedding: number[], dto: CreateInteractionDto): Promise<void> {
+  async updateTasteFromInteraction(
+    userId: string,
+    artworkEmbedding: number[],
+    dto: CreateInteractionDto,
+  ): Promise<void> {
     const profile = await this.usersService.getProfile(userId);
-    const current = profile?.embedding ?? this.normalizeVector(Array.from({ length: artworkEmbedding.length }, () => 0));
+    const current =
+      profile?.embedding ??
+      this.normalizeVector(
+        Array.from({ length: artworkEmbedding.length }, () => 0),
+      );
     const alpha = 0.9;
     const weight = this.eventWeight(dto);
     if (weight === 0) {
       return;
     }
 
-    const updated = current.map((value, index) => alpha * value + weight * artworkEmbedding[index]);
+    const updated = current.map(
+      (value, index) => alpha * value + weight * artworkEmbedding[index],
+    );
     const normalized = this.normalizeVector(updated);
 
     await this.usersService.upsertProfile(userId, normalized, new Date());
@@ -83,7 +121,7 @@ export class RecommendationService {
     if (NEGATIVE_EVENTS.has(dto.eventType)) {
       return -(0.3 + dwellWeight * 0.5);
     }
-    if (dto.eventType === 'impression' && dwellWeight > 0.5) {
+    if (dto.eventType === "impression" && dwellWeight > 0.5) {
       return dwellWeight;
     }
     return 0;
@@ -100,7 +138,9 @@ export class RecommendationService {
   }
 
   private normalizeVector(vector: number[]): number[] {
-    const magnitude = Math.sqrt(vector.reduce((sum, value) => sum + value * value, 0));
+    const magnitude = Math.sqrt(
+      vector.reduce((sum, value) => sum + value * value, 0),
+    );
     if (magnitude === 0) {
       return vector;
     }
